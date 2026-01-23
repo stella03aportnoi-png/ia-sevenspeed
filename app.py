@@ -26,7 +26,7 @@ except FileNotFoundError:
     st.stop()
 
 # --- CÉREBRO DA IA ---
-modelo = genai.GenerativeModel('gemini-1.5-flash')
+modelo = genai.GenerativeModel('gemini-pro')
 
 prompt_sistema = f"""
 Você é a Engenheira Chefe e gestora da escuderia 'Seven'.
@@ -61,4 +61,5 @@ if prompt := st.chat_input("Qual a dúvida?"):
         st.session_state.messages.append({"role": "assistant", "content": response.text})
     except Exception as e:
         st.error(f"Erro na IA: {e}")
+
 
