@@ -5484,7 +5484,7 @@ surface/boundary.
 12. Orthographic drawings with detailed dimensions of rear wing and support structure highlighting wing
 surface/boundary.
 13. Detailed description of intended quality and finish in relation to individual components / assembled
-car."""
+car.
 
 """
 
@@ -5537,3 +5537,4 @@ if prompt := st.chat_input("Pergunte sobre regulamento, pontuação ou gestão..
         st.session_state.messages.append({"role": "assistant", "content": response.text})
     except Exception as e:
         st.error(f"Erro ao conectar com a IA: {e}")
+
