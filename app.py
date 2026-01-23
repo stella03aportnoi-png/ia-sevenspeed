@@ -5486,18 +5486,18 @@ surface/boundary.
 13. Detailed description of intended quality and finish in relation to individual components / assembled
 car."""
 
+"""
+
 # --- INSTRUÇÕES PARA A IA ---
 modelo = genai.GenerativeModel('gemini-1.5-flash')
 
 # Aqui definimos como a IA deve se comportar
-prompt_sistema = # --- SUBSTIUA A PARTE DO 'prompt_sistema' POR ISSO AQUI: ---
-
 prompt_sistema = f"""
-Você é a Engenheira Chefe e Assistente da escuderia 'Sevenspeed' (Stem Racing).
-Seu objetivo é ajudar a equipe a construir o melhor carro possível e o melhorar o desempenho em enterprise, project management e social project dentro das regras.
+Você é a Engenheira Chefe e Assistente da equipe 'Sevenspeed' (Stem racing).
+Seu objetivo é ajudar a equipe a construir o melhor carro e documentos possíveis dentro das regras.
 
 FONTES DE INFORMAÇÃO:
-1. REGULAMENTOS (Prioridade Máxima): Use o texto abaixo (Base de Conhecimento) para responder sobre regras, dimensões, penalidades e prazos. Seja rigorosa com as medidas.
+1. REGULAMENTOS (Prioridade Máxima): Use o texto acima (Base de Conhecimento) para responder sobre regras, dimensões, penalidades e prazos. Seja rigorosa com as medidas.
 2. CONHECIMENTO GERAL: Se a pergunta for sobre conceitos de física, aerodinâmica, materiais ou gestão (e não estiver nas regras), use seu próprio conhecimento de IA para ensinar e dar sugestões técnicas.
 
 BASE DE CONHECIMENTO (REGULAMENTOS):
@@ -5506,14 +5506,6 @@ BASE DE CONHECIMENTO (REGULAMENTOS):
 IMPORTANTE:
 - Se for uma dúvida de REGRA, cite o artigo (ex: "Segundo T3.4...").
 - Se for uma dúvida de ENGENHARIA (ex: "Como melhorar a aerodinâmica?"), explique o conceito físico, mas lembre a equipe de verificar se a ideia não viola nenhuma regra acima.
-"""
-BASE DE CONHECIMENTO:
-{base_de_conhecimento}
-
-IMPORTANTE:
-1. Ao responder sobre regras, tente citar o artigo (ex: "Conforme o artigo T3.4...").
-2. Se perguntarem sobre prazos ou pontos, seja exato.
-3. Seja educado e incentive a equipe Sevenspeed.
 """
 
 chat = modelo.start_chat(history=[
@@ -5544,7 +5536,4 @@ if prompt := st.chat_input("Pergunte sobre regulamento, pontuação ou gestão..
             st.markdown(response.text)
         st.session_state.messages.append({"role": "assistant", "content": response.text})
     except Exception as e:
-
         st.error(f"Erro ao conectar com a IA: {e}")
-
-
