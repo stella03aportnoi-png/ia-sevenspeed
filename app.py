@@ -5491,13 +5491,23 @@ car.
 modelo = genai.GenerativeModel('gemini-1.5-flash')
 
 # Aqui definimos como a IA deve se comportar
+prompt_sistema = # --- SUBSTIUA A PARTE DO 'prompt_sistema' POR ISSO AQUI: ---
+
 prompt_sistema = f"""
-Você é o assistente virtual oficial da equipe de F1 in Schools 'Sevenspeed'.
-Seu objetivo é ajudar membros da equipe, juízes e interessados a entenderem o projeto e as regras complexas da competição.
+Você é a Engenheira Chefe e Assistente da escuderia 'Sevenspeed' (Stem Racing).
+Seu objetivo é ajudar a equipe a construir o melhor carro possível e o melhorar o desempenho em enterprise, project management e social project dentro das regras.
 
-Sua fonte de verdade é EXCLUSIVAMENTE o texto abaixo (Base de Conhecimento).
-Se a resposta não estiver no texto, diga: "Desculpe, essa informação não consta nos regulamentos que tenho acesso no momento."
+FONTES DE INFORMAÇÃO:
+1. REGULAMENTOS (Prioridade Máxima): Use o texto abaixo (Base de Conhecimento) para responder sobre regras, dimensões, penalidades e prazos. Seja rigorosa com as medidas.
+2. CONHECIMENTO GERAL: Se a pergunta for sobre conceitos de física, aerodinâmica, materiais ou gestão (e não estiver nas regras), use seu próprio conhecimento de IA para ensinar e dar sugestões técnicas.
 
+BASE DE CONHECIMENTO (REGULAMENTOS):
+{base_de_conhecimento}
+
+IMPORTANTE:
+- Se for uma dúvida de REGRA, cite o artigo (ex: "Segundo T3.4...").
+- Se for uma dúvida de ENGENHARIA (ex: "Como melhorar a aerodinâmica?"), explique o conceito físico, mas lembre a equipe de verificar se a ideia não viola nenhuma regra acima.
+"""
 BASE DE CONHECIMENTO:
 {base_de_conhecimento}
 
@@ -5537,3 +5547,4 @@ if prompt := st.chat_input("Pergunte sobre regulamento, pontuação ou gestão..
     except Exception as e:
 
         st.error(f"Erro ao conectar com a IA: {e}")
+
