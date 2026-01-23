@@ -1,65 +1,53 @@
 import streamlit as st
 import google.generativeai as genai
+import os
 
-# --- CONFIGURAÇÃO DA PÁGINA ---
-st.set_page_config(page_title="IA Sevenspeed", page_icon="🏎️", layout="wide")
+st.title("🔧 Modo de Diagnóstico Sevenspeed")
 
-st.title("🏎️ Chatbot Oficial Sevenspeed")
-st.markdown("Sou a IA especialista nos regulamentos da F1 in Schools. Pergunte!")
+# 1. Teste da Chave
+api_key = st.secrets.get("GEMINI_API_KEY")
+if not api_key:
+    st.error("❌ ERRO: Chave API não encontrada nos Secrets.")
+    st.stop()
+else:
+    st.success(f"✅ Chave encontrada! (Começa com: {api_key[:4]}...)")
 
-# --- CONFIGURAÇÃO DA API ---
+# 2. Configurar Google
 try:
-    api_key = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=api_key)
+    st.write(f"📚 Versão da biblioteca Google: {genai.__version__}")
 except Exception as e:
-    st.error("⚠️ Erro na Chave API. Verifique os 'Secrets' do Streamlit.")
-    st.stop()
+    st.error(f"❌ Erro ao configurar: {e}")
 
-# --- CARREGAR O TEXTO (LÊ O ARQUIVO REGRAS.TXT) ---
+# 3. Testar quais modelos estão disponíveis para VOCÊ
+st.write("🔍 Pesquisando modelos disponíveis para sua chave...")
 try:
-    with open('regras.txt', 'r', encoding='utf-8') as f:
-        base_de_conhecimento = f.read()
-except FileNotFoundError:
-    st.error("⚠️ ERRO CRÍTICO: Não encontrei o arquivo 'regras.txt' no GitHub. Crie ele e cole os regulamentos lá!")
-    st.stop()
-
-# --- CÉREBRO DA IA ---
-# Vamos tentar o Flash primeiro, se falhar, ele avisa
-modelo = genai.GenerativeModel('gemini-1.5-flash')
-
-prompt_sistema = f"""
-Você é a Engenheira Chefe da equipe 'Sevenspeed'.
-Responda dúvidas sobre regras, dimensões, penalidades e projeto baseada EXCLUSIVAMENTE no texto abaixo.
-
-BASE DE CONHECIMENTO (REGULAMENTOS):
-{base_de_conhecimento}
-"""
-
-# --- CHAT ---
-if "chat" not in st.session_state:
-    st.session_state.chat = modelo.start_chat(history=[
-        {"role": "user", "parts": prompt_sistema},
-        {"role": "model", "parts": "Entendido. Estou pronta para ajudar com as regras e engenharia."}
-    ])
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Mostra histórico
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-# Caixa de pergunta
-if prompt := st.chat_input("Qual a dúvida?"):
-    st.chat_message("user").markdown(prompt)
-    st.session_state.messages.append({"role": "user", "content": prompt})
-
-    try:
-        response = st.session_state.chat.send_message(prompt)
-        with st.chat_message("assistant"):
-            st.markdown(response.text)
-        st.session_state.messages.append({"role": "assistant", "content": response.text})
-    except Exception as e:
-        st.error(f"Erro na IA: {e}")
-        st.info("Dica: Se o erro for 404, tente ir em 'Manage App' > 'Reboot' para atualizar a biblioteca.")
+    modelos_disponiveis = []
+    for m in genai.list_models():
+        if 'generateContent' in m.supported_generation_methods:
+            modelos_disponiveis.append(m.name)
+    
+    if modelos_disponiveis:
+        st.success(f"✅ Modelos encontrados: {modelos_disponiveis}")
+        
+        # Tenta usar o primeiro modelo que encontrar
+        modelo_escolhido = modelos_disponiveis[0]
+        st.info(f"🤖 Tentando conectar com: {modelo_escolhido}")
+        
+        model = genai.GenerativeModel(modelo_escolhido)
+        response = model.generate_content("Diga 'Olá Equipe Sevenspeed'")
+        st.balloons()
+        st.success(f"🎉 SUCESSO! O modelo respondeu: {response.text}")
+        st.markdown("---")
+        st.markdown("### Agora sabemos que funciona! Pode voltar o código do chat.")
+        
+    else:
+        st.warning("⚠️ A conexão funcionou, mas nenhum modelo foi encontrado para essa chave.")
+        
+except Exception as e:
+    st.error(f"❌ ERRO GRAVE DE CONEXÃO: {e}")
+    st.markdown("""
+    **Soluções Possíveis:**
+    1. Sua API Key pode não ter permissões (Crie uma nova).
+    2. O Google AI Studio pode não estar disponível na região do servidor (EUA).
+    """)
