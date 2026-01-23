@@ -36,8 +36,8 @@ except Exception as e:
     st.stop()
 
 prompt_sistema = f"""
-Você é a Engenheira Chefe e Assistente da equipe 'Sevenspeed' (F1 in Schools).
-Seu objetivo é ajudar a equipe a construir o melhor carro possível dentro das regras.
+Você é a Assistente geral da escuderia 'Seven' (Stem Racing).
+Seu objetivo é ajudar a equipe a construir o melhor carro e documentos possíveis dentro das regras.
 
 FONTES DE INFORMAÇÃO:
 1. REGULAMENTOS (Prioridade Máxima): Use o texto abaixo (Base de Conhecimento) para responder sobre regras, dimensões, penalidades e prazos. Seja rigorosa com as medidas (mm, gramas).
@@ -78,3 +78,4 @@ if prompt := st.chat_input("Qual a dúvida sobre o carro ou regras?"):
         st.session_state.messages.append({"role": "assistant", "content": response.text})
     except Exception as e:
         st.error(f"Erro na resposta: {e}")
+
