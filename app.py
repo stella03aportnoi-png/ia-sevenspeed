@@ -6,7 +6,7 @@ import os
 st.set_page_config(page_title="IA Sevenspeed", page_icon="🏎️", layout="wide")
 
 st.title("🏎️ Chatbot Oficial Sevenspeed")
-st.markdown("Sou a IA especialista nos regulamentos da F1 in Schools. Pergunte!")
+st.markdown("Sou a IA da escuderia Seven e estou aqui para te ajudar!")
 
 # --- CONFIGURAÇÃO DA API ---
 try:
@@ -29,7 +29,7 @@ except FileNotFoundError:
 modelo = genai.GenerativeModel('gemini-1.5-flash')
 
 prompt_sistema = f"""
-Você é a Engenheira Chefe da equipe 'Sevenspeed'.
+Você é a Engenheira Chefe e gestora da escuderia 'Seven'.
 Responda dúvidas sobre regras, dimensões e projeto baseada EXCLUSIVAMENTE no texto abaixo.
 
 BASE DE CONHECIMENTO:
@@ -61,3 +61,4 @@ if prompt := st.chat_input("Qual a dúvida?"):
         st.session_state.messages.append({"role": "assistant", "content": response.text})
     except Exception as e:
         st.error(f"Erro na IA: {e}")
+
