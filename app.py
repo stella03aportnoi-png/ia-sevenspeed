@@ -5484,8 +5484,7 @@ surface/boundary.
 12. Orthographic drawings with detailed dimensions of rear wing and support structure highlighting wing
 surface/boundary.
 13. Detailed description of intended quality and finish in relation to individual components / assembled
-car.
-"""
+car."""
 
 # --- INSTRUÇÕES PARA A IA ---
 modelo = genai.GenerativeModel('gemini-1.5-flash')
@@ -5547,4 +5546,5 @@ if prompt := st.chat_input("Pergunte sobre regulamento, pontuação ou gestão..
     except Exception as e:
 
         st.error(f"Erro ao conectar com a IA: {e}")
+
 
