@@ -60,7 +60,7 @@ if "chat" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
     # Adiciona uma mensagem inicial de boas-vindas do assistente
-    st.session_state.messages.append({"role": "assistant", "content": "Entendido. Sou a IA da Sevenspeed. Pode perguntar sobre o regulamento, finanças, captação de recursos ou engenharia!"})
+    st.session_state.messages.append({"role": "assistant", "content": "Olá, escuderia, Sou a IA oficial da Seven. O que vamos construir hoje?"})
 
 # Mostra histórico
 for message in st.session_state.messages:
@@ -79,6 +79,7 @@ if prompt := st.chat_input("Qual a dúvida sobre o carro ou regras?"):
         st.session_state.messages.append({"role": "assistant", "content": response.text})
     except Exception as e:
         st.error(f"Erro na resposta: {e}")
+
 
 
 
