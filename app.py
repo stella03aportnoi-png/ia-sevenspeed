@@ -4,7 +4,7 @@ import google.generativeai as genai
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="IA da Seven", page_icon="🏎️", layout="wide")
 
-st.title("🏎️ Chatbot Oficial Escuderia Seven")
+st.title("🏎️ IA Oficial Escuderia Seven")
 st.markdown("Sou a IA da escuderia Seven, estou aqui para te ajudar!")
 
 # --- CONFIGURAÇÃO DA API ---
@@ -79,6 +79,7 @@ if prompt := st.chat_input("Qual a dúvida sobre o carro ou regras?"):
         st.session_state.messages.append({"role": "assistant", "content": response.text})
     except Exception as e:
         st.error(f"Erro na resposta: {e}")
+
 
 
 
