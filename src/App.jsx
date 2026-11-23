@@ -3,7 +3,69 @@ import { supabase } from "./supabase";
 const welcome={role:"assistant",content:"Olá, escuderia, Sou a IA oficial da Seven. O que vamos construir hoje?"};
 export default function App(){const[session,S]=useState(null),[email,E]=useState(""),[password,P]=useState(""),[mode,M]=useState("login"),[err,Q]=useState(""),[busy,B]=useState(false),[items,I]=useState([]),[active,A]=useState(null),[messages,H]=useState([welcome]),[input,T]=useState(""),[sending,D]=useState(false);const bottom=useRef(null);
 useEffect(()=>{supabase.auth.getSession().then(({data})=>S(data.session));const{data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>S(s));return()=>subscription.unsubscribe()},[]);
-useEffect(()=>{if(session)load();else{I([]);A(null);H([welcome])}},[session]);
+useEffect(()=>{
+  let cancelled = false;
+
+  async function init(){
+    if(!session){
+      I([]);
+      A(null);
+      H([welcome]);
+      return;
+    }
+
+    try{
+      const {data,error} = await supabase
+        .from("conversations")
+        .select("id,title,updated_at")
+        .order("updated_at",{ascending:false});
+
+      if(cancelled) return;
+
+      if(error) throw error;
+
+      I(data || []);
+
+      if(data?.length){
+        const {data:conversation,error:openError} = await supabase
+          .from("conversations")
+          .select("id,title,messages")
+          .eq("id",data[0].id)
+          .single();
+
+        if(cancelled) return;
+        if(openError) throw openError;
+
+        A(conversation.id);
+        H(Array.isArray(conversation.messages) && conversation.messages.length
+          ? conversation.messages
+          : [welcome]);
+      }else{
+        const {data:created,error:createError} = await supabase
+          .from("conversations")
+          .insert({
+            user_id:session.user.id,
+            title:"Nova conversa",
+            messages:[welcome]
+          })
+          .select("id,title,updated_at")
+          .single();
+
+        if(cancelled) return;
+        if(createError) throw createError;
+
+        I([created]);
+        A(created.id);
+        H([welcome]);
+      }
+    }catch(error){
+      if(!cancelled) Q("Erro ao carregar conversas: "+error.message);
+    }
+  }
+
+  init();
+  return ()=>{cancelled=true};
+},[session]);
 useEffect(()=>bottom.current?.scrollIntoView({behavior:"smooth"}),[messages,sending]);
 async function load(){const{data,error}=await supabase.from("conversations").select("id,title,updated_at").order("updated_at",{ascending:false});if(error){Q("Erro ao carregar conversas: "+error.message);return}I(data||[]);if(data?.length)open(data[0].id);else create()}
 async function open(id){const{data,error}=await supabase.from("conversations").select("id,title,messages").eq("id",id).single();if(error){Q(error.message);return}A(id);H(data.messages?.length?data.messages:[welcome])}
