@@ -1,4 +1,5 @@
-import React,{useEffect,useRef,useState}from"react";
+import React,{useEffect,useRef,useState} from "react";
+import { supabase } from "./supabase";
 const welcome={role:"assistant",content:"Olá, escuderia, Sou a IA oficial da Seven. O que vamos construir hoje?"};
 export default function App(){const[session,S]=useState(null),[email,E]=useState(""),[password,P]=useState(""),[mode,M]=useState("login"),[err,Q]=useState(""),[busy,B]=useState(false),[items,I]=useState([]),[active,A]=useState(null),[messages,H]=useState([welcome]),[input,T]=useState(""),[sending,D]=useState(false);const bottom=useRef(null);
 useEffect(()=>{supabase.auth.getSession().then(({data})=>S(data.session));const{data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>S(s));return()=>subscription.unsubscribe()},[]);
